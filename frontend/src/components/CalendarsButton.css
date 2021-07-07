@@ -1,0 +1,17 @@
+#container {
+  display: flex;
+  justify-content: space-between;
+}
+#calendars {
+  display: flex;
+  flex-direction: column;
+}
+p {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  margin-bottom: 0;
+}

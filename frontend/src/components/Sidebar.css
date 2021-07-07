@@ -1,0 +1,22 @@
+* {
+  box-sizing: border-box;
+}
+
+div {
+  margin-right: 0;
+  padding-right: 0;
+}
+#sidebar {
+  display: flex;
+  flex-direction: column;
+  padding-right: 10px;
+}
+#sidebar-calendar {
+  background-color: red;
+  height: 240px;
+  width: 240px;
+}
+#button-space {
+  height: 60px;
+  width: 240px;
+}
