@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import moment from "moment";
-import "./Calendar.css";
+import "./MonthCalendar.css";
 
-function Calendar(props) {
+function MonthCalendar(props) {
   const [selectedDay, changeDay] = useState(moment());
   let weekdays = moment.weekdays();
-  let weekdayshort = moment.weekdaysShort();
   let weekdaysmin = moment.weekdaysMin();
   let calendarHeader = [];
+  let calendarClick = (e) => {
+    let date = e.target.id;
+    console.log(date);
+  };
   weekdays.forEach((day, index) => {
     calendarHeader.push(
       <div class="calendarBlock">
@@ -18,7 +21,7 @@ function Calendar(props) {
 
   const firstDayOfMonth = () => {
     let dateObject = selectedDay;
-    let firstDay = moment(dateObject).startOf("month");
+    let firstDay = moment(dateObject).startOf("month").format("d");
     return firstDay;
   };
 
@@ -35,23 +38,27 @@ function Calendar(props) {
     let lastDay = moment(dateObject).endOf("month").format("D");
     return lastDay;
   };
-  const divWrapper = (element) => {
+  const divWrapper = (element, id) => {
     return (
       <div class="calendarBlock">
-        <span>{element}</span>
+        <div class="select">
+          <span id={id} onClick={calendarClick}>
+            {element}
+          </span>
+        </div>
       </div>
     );
   };
   let monthCalendar = [];
-  let firstDay = parseInt(firstDayOfMonth().format("d"));
+  let firstDay = parseInt(firstDayOfMonth());
   if (firstDay !== "0") {
     let lastDay = parseInt(lastDayOfPreviousMonth());
-    for (let x = 0; x < parseInt(firstDay); x++) {
+    for (let x = 0; x < firstDay; x++) {
       monthCalendar.push(divWrapper(lastDay - (firstDay - x) + 1));
     }
   }
   for (let x = 1; x <= parseInt(lastDayOfMonth()); x++) {
-    monthCalendar.push(divWrapper(x));
+    monthCalendar.push(divWrapper(x, x));
   }
   let endDayPadder = 1;
   while (monthCalendar.length < 42) {
@@ -68,14 +75,25 @@ function Calendar(props) {
       cells = [];
     }
   });
+  let calendarTitle = props.sidebar ? (
+    <div>
+      {selectedDay.format("MMMM YYYY")}
+      <button>&lt;</button>
+      <button>&gt;</button>
+    </div>
+  ) : (
+    <div>{selectedDay.format("MMMM")}</div>
+  );
+
   return (
-    <>
+    <div class="calendar">
+      <div class="calendarRow">{calendarTitle}</div>
       <div class="calendarRow">{calendarHeader}</div>
       {rows.map((row) => (
         <div class="calendarRow">{row}</div>
       ))}
-    </>
+    </div>
   );
 }
 
-export default Calendar;
+export default MonthCalendar;

@@ -2,14 +2,14 @@ import React from "react";
 import "./Sidebar.css";
 import "./CalendarsButton";
 import CalendarsButton from "./CalendarsButton";
-import Calendar from "./Calendar";
+import MonthCalendar from "./MonthCalendar";
 
 function Sidebar(props) {
   return (
     <div id="sidebar">
       <div id="button-space"></div>
       <div id="sidebar-calendar">
-        <Calendar />
+        <MonthCalendar sidebar={true} />
       </div>
       <div id="my-calendars">
         <CalendarsButton name="My calendars" />
