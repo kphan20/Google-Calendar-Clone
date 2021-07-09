@@ -1,10 +1,35 @@
+#calendars-drop-down {
+  background-color: white;
+  outline: none;
+  border: none;
+  width: 100%;
+  font: 16px -apple-system, BlinkMacSystemFont;
+  font-size: 3;
+}
+
 #container {
   display: flex;
   justify-content: space-between;
+  cursor: pointer;
+  margin-top: 16px;
+}
+#container:hover {
+  background-color: #bebebe;
 }
 #calendars {
   display: flex;
   flex-direction: column;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: pointer;
+}
+
+.calendar:hover {
+  background-color: #bebebe;
 }
 p {
   -webkit-touch-callout: none;
@@ -14,4 +39,5 @@ p {
   -ms-user-select: none;
   user-select: none;
   margin-bottom: 0;
+  margin-top: 0;
 }
