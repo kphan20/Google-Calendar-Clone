@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Dropdown } from "react-bootstrap";
 import "./Header.css";
 
 function Header(props) {
@@ -56,6 +55,7 @@ function Header(props) {
               Day
             </option>
             <option value="Month">Month</option>
+            <option value="Year">Year</option>
           </select>
           <div>bruh</div>
         </div>

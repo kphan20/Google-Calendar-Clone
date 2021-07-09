@@ -22,3 +22,14 @@
   width: 60px;
   height: 60px;
 }
+
+#inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.yearMonths {
+  height: 244px;
+  flex: 0 0 241px;
+}
