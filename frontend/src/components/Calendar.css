@@ -1,0 +1,11 @@
+.calendarRow {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.calendarBlock {
+  display: flex;
+  width: 31px;
+  justify-content: center;
+}

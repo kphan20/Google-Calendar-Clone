@@ -1,66 +1,67 @@
 import React, { useState } from "react";
+import { Dropdown } from "react-bootstrap";
 import "./Header.css";
-import Sidebar from "./Sidebar";
 
 function Header(props) {
-  const [sidebarOpen, sidebarToggle] = useState(true);
+  const [dropDown, toggle] = useState(false);
 
   function onClick() {
-    sidebarToggle(!sidebarOpen);
+    toggle(!dropDown);
+    console.log(dropDown);
   }
-
   return (
-    <>
-      <header role="banner">
-        <div id="headercontainer">
-          <div class="row">
-            <div class="column" id="menu-button">
-              <button id="menu-toggle" onClick={onClick}>
-                <img
-                  src="./Hamburger_icon.svg.png"
-                  alt=""
-                  width="50"
-                  height="50"
-                ></img>
-              </button>
-            </div>
-            <div class="column" id="logo">
+    <header role="banner">
+      <div id="headercontainer">
+        <div class="row">
+          <div class="column" id="menu-button">
+            <button id="menu-toggle" onClick={props.menuButton}>
               <img
-                class="gb_tc gb_6d"
-                src="//ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_6_2x.png#"
-                srcset="//ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_6_2x.png 2x ,//ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_6_2x.png# 1x"
+                src="./Hamburger_icon.svg.png"
                 alt=""
-                aria-hidden="true"
-                width="40px"
-                height="40px"
+                width="50"
+                height="50"
               ></img>
-            </div>
-            <div
-              class="column"
-              id="Calendar-header"
-              style={{ "text-decoration": "none" }}
-            >
-              Calendar
-            </div>
+            </button>
           </div>
-          <div class="row">
-            <button id="today-button">Today</button>
-            <button id="previous-button">&lt;</button>
-            <button id="next-button">&gt;</button>
-            <button id="month-selector">July 2021</button>
+          <div class="column" id="logo">
+            <img
+              class="gb_tc gb_6d"
+              src="//ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_9_2x.png#"
+              srcset="//ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_9_2x.png 2x ,//ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_9_2x.png# 1x"
+              alt=""
+              aria-hidden="true"
+              width="40px"
+              height="40px"
+            ></img>
           </div>
-          <hr id="headerline"></hr>
+          <div
+            class="column"
+            id="Calendar-header"
+            style={{ "text-decoration": "none" }}
+          >
+            Calendar
+          </div>
         </div>
-      </header>
-      <button id="create">Create</button>
-      <div class="row1">
-        {sidebarOpen && <Sidebar />}
-        <div id="big-container">
-          <div id="top-left"></div>
-          <div id="inner">hello</div>
+        <div class="row">
+          <button id="today-button">Today</button>
+          <button id="previous-button">&lt;</button>
+          <button id="next-button">&gt;</button>
+          <button id="month-selector">July 2021</button>
         </div>
+        <div class="row" id="top-right">
+          <div>bruh</div>
+          <div>bruh</div>
+          <select id="dropdown" name="Filler v" onChange={props.displaySelect}>
+            <option selected value="Day">
+              Day
+            </option>
+            <option value="Month">Month</option>
+          </select>
+          <div>bruh</div>
+        </div>
+        <hr id="headerline"></hr>
       </div>
-    </>
+    </header>
   );
 }
 

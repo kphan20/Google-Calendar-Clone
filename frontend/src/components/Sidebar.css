@@ -12,9 +12,15 @@ div {
   padding-right: 10px;
 }
 #sidebar-calendar {
-  background-color: red;
-  height: 240px;
-  width: 240px;
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  /*background-color: red;*/
+  height: 244px;
+  width: 248px;
+  padding-left: 19px;
+  padding-right: 12px;
+  padding-bottom: 16px;
 }
 #button-space {
   height: 60px;

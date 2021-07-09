@@ -3,19 +3,19 @@ import "./CalendarsButton.css";
 
 function CalendarsButton(props) {
   const [openState, toggle] = useState(true);
-  let filledArray = new Array(3).fill(<div>Example</div>);
+  let filledArray = new Array(3).fill(<div class="calendar">Example</div>);
   const arrow = openState ? "^" : "v";
   function onClick() {
     toggle(!openState);
   }
   return (
     <>
-      <a onClick={onClick}>
-        <div id="container">
+      <button id="calendars-drop-down" onClick={onClick}>
+        <span id="container">
           <p>{props.name}</p>
           <p>{arrow}</p>
-        </div>
-      </a>
+        </span>
+      </button>
       {openState && <div id="calendars">{filledArray}</div>}
     </>
   );
