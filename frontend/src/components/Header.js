@@ -2,12 +2,6 @@ import React, { useState } from "react";
 import "./Header.css";
 
 function Header(props) {
-  const [dropDown, toggle] = useState(false);
-
-  function onClick() {
-    toggle(!dropDown);
-    console.log(dropDown);
-  }
   return (
     <header role="banner">
       <div id="headercontainer">
