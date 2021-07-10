@@ -32,4 +32,5 @@
 .yearMonths {
   height: 244px;
   flex: 0 0 241px;
+  margin-right: 70px;
 }

@@ -4,6 +4,14 @@
   justify-content: space-between;
   height: 100%;
 }
+#calendarHead {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+#monthText {
+  margin-right: auto;
+}
 .calendarRow {
   display: flex;
   width: 100%;
@@ -18,6 +26,7 @@
 .select {
   display: flex;
   justify-content: center;
+  width: 21.6px !important;
   border-radius: 50%;
   width: 100%;
 }

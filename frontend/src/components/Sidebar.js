@@ -9,7 +9,11 @@ function Sidebar(props) {
     <div id="sidebar">
       <div id="button-space"></div>
       <div id="sidebar-calendar">
-        <MonthCalendar sidebar={true} />
+        <MonthCalendar
+          sidebar={true}
+          day={props.monthCalendarDay}
+          change={props.monthCalendarChange}
+        />
       </div>
       <div id="my-calendars">
         <CalendarsButton name="My calendars" />

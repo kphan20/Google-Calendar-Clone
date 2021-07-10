@@ -3,7 +3,7 @@ import moment from "moment";
 import "./MonthCalendar.css";
 
 function MonthCalendar(props) {
-  const [selectedDay, changeDay] = useState(moment());
+  let selectedDay = moment(props.day);
   let weekdays = moment.weekdays();
   let weekdaysmin = moment.weekdaysMin();
   let calendarHeader = [];
@@ -75,11 +75,19 @@ function MonthCalendar(props) {
       cells = [];
     }
   });
+  const nextMonth = () => {
+    props.change(selectedDay.add(1, "month"));
+  };
+  const previousMonth = () => {
+    props.change(selectedDay.subtract(1, "month"));
+  };
   let calendarTitle = props.sidebar ? (
-    <div>
-      {selectedDay.format("MMMM YYYY")}
-      <button>&lt;</button>
-      <button>&gt;</button>
+    <div id="calendarHead">
+      <p id="monthText">{selectedDay.format("MMMM YYYY")}</p>
+      <div>
+        <button onClick={previousMonth}>&lt;</button>
+        <button onClick={nextMonth}>&gt;</button>
+      </div>
     </div>
   ) : (
     <div>{selectedDay.format("MMMM")}</div>
