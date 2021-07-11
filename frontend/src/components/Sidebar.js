@@ -6,22 +6,26 @@ import MonthCalendar from "./MonthCalendar";
 
 function Sidebar(props) {
   return (
-    <div id="sidebar">
+    <>
       <div id="button-space"></div>
-      <div id="sidebar-calendar">
-        <MonthCalendar
-          sidebar={true}
-          day={props.monthCalendarDay}
-          change={props.monthCalendarChange}
-        />
+      <div id="sidebar">
+        <div id="sidebar-calendar">
+          <MonthCalendar
+            sidebar={true}
+            day={props.monthCalendarDay}
+            changeDay={props.monthCalendarChange}
+            viewDay={props.viewDay}
+            changeView={props.monthCalendarViewChange}
+          />
+        </div>
+        <div id="my-calendars">
+          <CalendarsButton name="My calendars" />
+        </div>
+        <div id="other-calendars">
+          <CalendarsButton name="Other calendars" />
+        </div>
       </div>
-      <div id="my-calendars">
-        <CalendarsButton name="My calendars" />
-      </div>
-      <div id="other-calendars">
-        <CalendarsButton name="Other calendars" />
-      </div>
-    </div>
+    </>
   );
 }
 

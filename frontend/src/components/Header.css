@@ -4,6 +4,7 @@
 header {
   position: fixed;
   width: 100%;
+  min-width: 700px;
   height: 60px;
   max-height: 60px;
   z-index: 1;
