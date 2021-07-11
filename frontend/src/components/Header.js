@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import "./Header.css";
+import moment from "moment";
 
 function Header(props) {
+  let day = moment().format("D");
+  let src = `//ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_${day}_2x.png#`;
+  let srcset = `//ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_${day}_2x.png 2x ,//ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_${day}_2x.png# 1x`;
   return (
     <header role="banner">
       <div id="headercontainer">
@@ -18,9 +22,8 @@ function Header(props) {
           </div>
           <div class="column" id="logo">
             <img
-              class="gb_tc gb_6d"
-              src="//ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_9_2x.png#"
-              srcset="//ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_9_2x.png 2x ,//ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_9_2x.png# 1x"
+              src={src}
+              srcSet={srcset}
               alt=""
               aria-hidden="true"
               width="40px"
@@ -30,24 +33,29 @@ function Header(props) {
           <div
             class="column"
             id="Calendar-header"
-            style={{ "text-decoration": "none" }}
+            style={{ textDecoration: "none" }}
           >
             Calendar
           </div>
         </div>
         <div class="row">
-          <button id="today-button">Today</button>
+          <button id="today-button" onClick={props.todayButtonClick}>
+            Today
+          </button>
           <button id="previous-button">&lt;</button>
           <button id="next-button">&gt;</button>
-          <button id="month-selector">July 2021</button>
+          <button id="month-selector">{props.headerMessage}</button>
         </div>
         <div class="row" id="top-right">
           <div>bruh</div>
           <div>bruh</div>
-          <select id="dropdown" name="Filler v" onChange={props.displaySelect}>
-            <option selected value="Day">
-              Day
-            </option>
+          <select
+            id="dropdown"
+            name="Filler v"
+            onChange={props.displaySelect}
+            defaultValue="Day"
+          >
+            <option value="Day">Day</option>
             <option value="Month">Month</option>
             <option value="Year">Year</option>
           </select>

@@ -43,3 +43,7 @@ span {
   -ms-user-select: none;
   user-select: none;
 }
+
+.notCurrentMonth {
+  color: gray;
+}
