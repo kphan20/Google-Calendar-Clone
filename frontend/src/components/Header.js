@@ -9,7 +9,7 @@ function Header(props) {
   return (
     <header role="banner">
       <div id="headercontainer">
-        <div class="row">
+        <div class="section">
           <div class="column" id="menu-button">
             <button id="menu-toggle" onClick={props.menuButton}>
               <img
@@ -38,22 +38,26 @@ function Header(props) {
             Calendar
           </div>
         </div>
-        <div class="row">
+        <div class="section">
           <button id="today-button" onClick={props.todayButtonClick}>
             Today
           </button>
-          <button id="previous-button">&lt;</button>
-          <button id="next-button">&gt;</button>
+          <button id="previous-button" onClick={props.backClick}>
+            &lt;
+          </button>
+          <button id="next-button" onClick={props.forwardClick}>
+            &gt;
+          </button>
           <button id="month-selector">{props.headerMessage}</button>
         </div>
-        <div class="row" id="top-right">
+        <div class="section" id="top-right">
           <div>bruh</div>
           <div>bruh</div>
           <select
             id="dropdown"
             name="Filler v"
             onChange={props.displaySelect}
-            defaultValue="Day"
+            defaultValue={props.changeDisplayDefault}
           >
             <option value="Day">Day</option>
             <option value="Month">Month</option>

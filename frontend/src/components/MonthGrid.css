@@ -10,12 +10,6 @@
   width: 100%;
   justify-content: space-around;
 }
-.grid-cell {
-  min-width: 100px;
-  min-height: 141px;
-  flex: 1;
-  flex-basis: 14%;
-}
 #daysGrid {
   display: flex;
   flex-direction: column;
@@ -28,4 +22,10 @@
   justify-content: space-around;
   flex: 1;
   flex-basis: 18%;
+}
+.grid-cell {
+  min-width: 100px;
+  min-height: 141px;
+  flex: 1;
+  flex-basis: 14%;
 }

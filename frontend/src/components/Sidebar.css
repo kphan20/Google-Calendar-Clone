@@ -1,10 +1,13 @@
-* {
-  box-sizing: border-box;
-}
-
 div {
   margin-right: 0;
   padding-right: 0;
+}
+#button-space {
+  position: fixed;
+  height: 84px;
+  width: 240px;
+  z-index: 1;
+  background-color: white;
 }
 #sidebar {
   display: flex;
@@ -16,17 +19,9 @@ div {
   display: flex;
   justify-content: space-evenly;
   flex-wrap: wrap;
-  /*background-color: red;*/
   height: 244px;
   width: 248px;
   padding-left: 19px;
   padding-right: 12px;
   padding-bottom: 16px;
-}
-#button-space {
-  position: fixed;
-  height: 84px;
-  width: 240px;
-  z-index: 1;
-  background-color: white;
 }
