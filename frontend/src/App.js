@@ -28,16 +28,46 @@ function App() {
   };
 
   let headerMessage = "";
+  let backClick = () => {};
+  let forwardClick = () => {};
   function chooseDisplay() {
     switch (displayOption) {
       case "Day":
         headerMessage = selectedDay.format("MMMM D, YYYY");
+        backClick = () => {
+          changeSelectedDay(moment(selectedDay.subtract(1, "day")));
+          changeViewedDay(moment(selectedDay));
+        };
+        forwardClick = () => {
+          changeSelectedDay(moment(selectedDay.add(1, "day")));
+          changeViewedDay(moment(selectedDay));
+        };
         return "Day";
       case "Month":
         headerMessage = selectedDay.format("MMMM YYYY");
-        return <MonthGrid viewedDay={viewedDay} />;
+        backClick = () => {
+          changeSelectedDay(
+            moment(selectedDay.subtract(1, "month").startOf("month"))
+          );
+          changeViewedDay(moment(selectedDay));
+        };
+        forwardClick = () => {
+          changeSelectedDay(
+            moment(selectedDay.add(1, "month").startOf("month"))
+          );
+          changeViewedDay(moment(selectedDay));
+        };
+        return <MonthGrid viewedDay={selectedDay} />;
       case "Year":
         headerMessage = selectedDay.format("YYYY");
+        backClick = () => {
+          changeSelectedDay(moment(selectedDay.subtract(1, "year")));
+          changeViewedDay(moment(selectedDay));
+        };
+        forwardClick = () => {
+          changeSelectedDay(moment(selectedDay.add(1, "year")));
+          changeViewedDay(moment(selectedDay));
+        };
         let months = moment.months();
         let yearMonths = [];
         let currentYear = selectedDay.format("YYYY");
@@ -82,6 +112,9 @@ function App() {
         displaySelect={displaySelect}
         headerMessage={headerMessage}
         todayButtonClick={todayButtonClick}
+        backClick={backClick}
+        forwardClick={forwardClick}
+        changeDisplayDefault={displayOption}
       />
       <button id="create">Create</button>
       <div class="row1">
