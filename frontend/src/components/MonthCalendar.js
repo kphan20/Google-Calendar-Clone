@@ -4,19 +4,36 @@ import "./MonthCalendar.css";
 import DayClicker from "./DayClicker";
 import { generateCalendar } from "./utils";
 
+const popUpWrapper = (content) => {
+  if (Array.isArray(content)) {
+    content = content.map((item) => {
+      return <div>{item}</div>;
+    });
+  }
+  return <div id="popupBox">{content}</div>;
+};
 function MonthCalendar(props) {
   let selectedDay = moment(props.viewDay);
   let weekdays = moment.weekdays();
   let weekdaysmin = moment.weekdaysMin();
   let calendarHeader = [];
-  let calendarClick = (e) => {
+
+  const calendarClick = (e) => {
     let date = e.target.id;
-    props.changeDay(moment(date));
+    props.changeSelectedDay(moment(date));
     props.changeView(moment(date));
+    if (!props.sidebar) {
+      if (props.testingDates[date] !== undefined) {
+        props.changeContent(popUpWrapper(props.testingDates[date]));
+      } else {
+        props.changeContent(popUpWrapper("No events scheduled"));
+      }
+      props.changeCoordinates({ x: e.nativeEvent.x, y: e.nativeEvent.y });
+    }
   };
   weekdays.forEach((day, index) => {
     calendarHeader.push(
-      <div class="calendarBlock">
+      <div className="calendarBlock">
         <span title={day}>{weekdaysmin[index]}</span>
       </div>
     );
@@ -53,11 +70,11 @@ function MonthCalendar(props) {
     <div>{selectedDay.format("MMMM")}</div>
   );
   return (
-    <div class="calendar">
-      <div class="calendarRow">{calendarTitle}</div>
-      <div class="calendarRow">{calendarHeader}</div>
+    <div className="calendar">
+      <div className="calendarRow">{calendarTitle}</div>
+      <div className="calendarRow">{calendarHeader}</div>
       {rows.map((row) => (
-        <div class="calendarRow">{row}</div>
+        <div className="calendarRow">{row}</div>
       ))}
     </div>
   );

@@ -1,4 +1,6 @@
 import moment from "moment";
+
+export const apiLink = "http://127.0.0.1:8000/";
 /**
  * Generates array that contains row arrays, which contain the "day" html elements that compose the month calendar
  * @param  {Moment obj} viewedMonth   Gives current date that contains current month

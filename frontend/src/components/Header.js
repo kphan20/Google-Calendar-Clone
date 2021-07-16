@@ -1,26 +1,42 @@
 import React from "react";
 import "./Header.css";
 import moment from "moment";
+import { Link } from "react-router-dom";
 
 function Header(props) {
   let day = moment().format("D");
   let src = `//ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_${day}_2x.png#`;
   let srcset = `//ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_${day}_2x.png 2x ,//ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_${day}_2x.png# 1x`;
+  const logOut = () => {
+    props.setAuthInfo({});
+  };
+  let loginButton = props.username ? (
+    <>
+      <p>Welcome {props.username}!</p>
+      <button type="button" onClick={logOut}>
+        Logout
+      </button>
+    </>
+  ) : (
+    <Link to="/login">
+      <button type="button">Login</button>
+    </Link>
+  );
   return (
     <header role="banner">
       <div id="headercontainer">
-        <div class="section">
-          <div class="column" id="menu-button">
+        <div className="section">
+          <div className="column" id="menu-button">
             <button id="menu-toggle" onClick={props.menuButton}>
               <img
-                src="./Hamburger_icon.svg.png"
+                src="https://pics.freeicons.io/uploads/icons/png/15211315791553239378-512.png"
                 alt=""
                 width="50"
                 height="50"
               ></img>
             </button>
           </div>
-          <div class="column" id="logo">
+          <div className="column" id="logo">
             <img
               src={src}
               srcSet={srcset}
@@ -31,14 +47,14 @@ function Header(props) {
             ></img>
           </div>
           <div
-            class="column"
+            className="column"
             id="Calendar-header"
             style={{ textDecoration: "none" }}
           >
             Calendar
           </div>
         </div>
-        <div class="section">
+        <div className="section">
           <button id="today-button" onClick={props.todayButtonClick}>
             Today
           </button>
@@ -50,20 +66,19 @@ function Header(props) {
           </button>
           <button id="month-selector">{props.headerMessage}</button>
         </div>
-        <div class="section" id="top-right">
-          <div>bruh</div>
-          <div>bruh</div>
+        <div className="section" id="top-right">
+          <div> </div>
           <select
             id="dropdown"
             name="Filler v"
             onChange={props.displaySelect}
-            defaultValue={props.changeDisplayDefault}
+            value={props.changeDisplayValue}
           >
             <option value="Day">Day</option>
             <option value="Month">Month</option>
             <option value="Year">Year</option>
           </select>
-          <div>bruh</div>
+          <div>{loginButton}</div>
         </div>
         <hr id="headerline"></hr>
       </div>

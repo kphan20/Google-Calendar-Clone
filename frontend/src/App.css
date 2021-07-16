@@ -7,6 +7,20 @@
   -ms-user-select: none;
   user-select: none;
 }
+#pop-up-container {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
+#pop-up > * {
+  display: flex;
+}
+#popupBox {
+  height: 110px;
+  width: 224px;
+  border: 1px solid black;
+  flex-direction: column;
+}
 #big-container {
   width: 100%;
 }
