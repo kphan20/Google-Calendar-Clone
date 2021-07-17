@@ -31,3 +31,7 @@ Link {
 label {
   margin-right: auto;
 }
+
+#error {
+  color: red;
+}
