@@ -28,4 +28,10 @@
   min-height: 141px;
   flex: 1;
   flex-basis: 14%;
+  border: 1px solid black;
+}
+
+.cell-clicker {
+  display: flex;
+  justify-content: center;
 }

@@ -1,11 +1,12 @@
 import React from "react";
 import "./MonthGrid.css";
+import DayClicker from "./DayClicker";
 import { generateCalendar } from "./utils";
 import moment from "moment";
 
 /**
  * Creates single month display
- * @param  {Object} props Desired format of date string representation
+ * @param  {Object} props Passing down viewedDay and setState functions for selectedDay, viewedDay, and displayToggle
  * @return {<div>}        String representation of viewedMonth
  */
 function MonthGrid(props) {
@@ -20,16 +21,26 @@ function MonthGrid(props) {
       </div>
     );
   });
-  const divWrapper = (id) => {
+  const divWrapper = (id, element, classname, calendarClick) => {
     return (
       <div class="grid-cell">
-        <div>{id}</div>
+        <div class="cell-clicker">
+          <DayClicker
+            id={id}
+            element={element}
+            classname={classname}
+            calendarClick={calendarClick}
+          />
+        </div>
         <div></div>
       </div>
     );
   };
-  const calendarClick = () => {
-    console.log("success");
+  const calendarClick = (e) => {
+    let date = e.target.id;
+    props.displayToggle("Day");
+    props.changeSelectedDay(moment(date));
+    props.changeViewedDay(moment(date));
   };
   const maxSize = (arr) => {
     return arr.length > 35 ? 42 : 35;

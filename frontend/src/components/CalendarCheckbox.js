@@ -2,9 +2,9 @@ import React from "react";
 
 function CalendarCheckbox(props) {
   return (
-    <div class="sidebarcalendaroptions">
+    <div className="sidebarcalendaroptions">
       <input type="checkbox" id={props.name} />
-      <label for={props.name} style={{ width: "100%" }}>
+      <label htmlFor={props.name} style={{ width: "100%" }}>
         {props.name}
       </label>
     </div>

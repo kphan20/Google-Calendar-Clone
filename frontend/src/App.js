@@ -5,8 +5,12 @@ import React, { useState } from "react";
 import moment from "moment";
 import MonthCalendar from "./components/MonthCalendar";
 import MonthGrid from "./components/MonthGrid";
+import Popup from "./components/Popup";
+import Login from "./components/Login";
+import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
 
 function App() {
+  let testingDates = { "Jul-8-2021": ["bruh", "no"] };
   const [sidebarOpen, sidebarToggle] = useState(true);
 
   function sidebarOnClick() {
@@ -30,6 +34,8 @@ function App() {
   let headerMessage = "";
   let backClick = () => {};
   let forwardClick = () => {};
+  const [popUpContent, changeContent] = useState(<div></div>);
+  const [popUpCoordinates, changeCoordinates] = useState({ x: 0, y: 0 });
   function chooseDisplay() {
     switch (displayOption) {
       case "Day":
@@ -57,7 +63,14 @@ function App() {
           );
           changeViewedDay(moment(selectedDay));
         };
-        return <MonthGrid viewedDay={selectedDay} />;
+        return (
+          <MonthGrid
+            viewedDay={selectedDay}
+            displayToggle={displayToggle}
+            changeSelectedDay={changeSelectedDay}
+            changeViewedDay={changeViewedDay}
+          />
+        );
       case "Year":
         headerMessage = selectedDay.format("YYYY");
         backClick = () => {
@@ -74,13 +87,16 @@ function App() {
         //let year = selectedDay.format
         months.forEach((month) => {
           yearMonths.push(
-            <div class="yearMonths" key={month}>
+            <div className="yearMonths" key={month}>
               <MonthCalendar
                 sidebar={false}
                 viewDay={moment(month + currentYear)}
                 day={selectedDay}
                 changeView={changeViewedDay}
-                changeDay={changeSelectedDay}
+                changeSelectedDay={changeSelectedDay}
+                changeContent={changeContent}
+                changeCoordinates={changeCoordinates}
+                testingDates={testingDates}
               />
             </div>
           );
@@ -105,33 +121,55 @@ function App() {
     background-color: #1a73e8;
   }
   `;
+  const [authInfo, setAuthInfo] = useState({});
   return (
-    <div className="App">
-      <Header
-        menuButton={sidebarOnClick}
-        displaySelect={displaySelect}
-        headerMessage={headerMessage}
-        todayButtonClick={todayButtonClick}
-        backClick={backClick}
-        forwardClick={forwardClick}
-        changeDisplayDefault={displayOption}
-      />
-      <button id="create">Create</button>
-      <div class="row1">
-        {sidebarOpen && (
-          <Sidebar
-            monthCalendarDay={selectedDay}
-            monthCalendarChange={changeSelectedDay}
-            viewDay={viewedDay}
-            monthCalendarViewChange={changeViewedDay}
-          />
-        )}
-        <div id="big-container" style={bigContainerStyle}>
-          <div id="inner">{bruh}</div>
-          <style scoped>{styleTag}</style>
-        </div>
-      </div>
-    </div>
+    <Router>
+      <Switch>
+        <Route path="/login">
+          <Login setAuthInfo={setAuthInfo} />
+        </Route>
+        <Route path="/">
+          <div className="App">
+            {displayOption === "Year" && (
+              <div id="pop-up-container">
+                <Popup
+                  coords={popUpCoordinates}
+                  popUpContent={popUpContent}
+                  changeContent={changeContent}
+                  changeCoordinates={changeCoordinates}
+                />
+              </div>
+            )}
+            <Header
+              menuButton={sidebarOnClick}
+              displaySelect={displaySelect}
+              headerMessage={headerMessage}
+              todayButtonClick={todayButtonClick}
+              backClick={backClick}
+              forwardClick={forwardClick}
+              changeDisplayValue={displayOption}
+              username={authInfo.username}
+              setAuthInfo={setAuthInfo}
+            />
+            <button id="create">Create</button>
+            <div className="row1">
+              {sidebarOpen && (
+                <Sidebar
+                  monthCalendarDay={selectedDay}
+                  monthCalendarChange={changeSelectedDay}
+                  viewDay={viewedDay}
+                  monthCalendarViewChange={changeViewedDay}
+                />
+              )}
+              <div id="big-container" style={bigContainerStyle}>
+                <div id="inner">{bruh}</div>
+                <style scoped>{styleTag}</style>
+              </div>
+            </div>
+          </div>
+        </Route>
+      </Switch>
+    </Router>
   );
 }
 

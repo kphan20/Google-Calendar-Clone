@@ -13,7 +13,7 @@ function Sidebar(props) {
           <MonthCalendar
             sidebar={true}
             day={props.monthCalendarDay}
-            changeDay={props.monthCalendarChange}
+            changeSelectedDay={props.monthCalendarChange}
             viewDay={props.viewDay}
             changeView={props.monthCalendarViewChange}
           />
