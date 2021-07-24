@@ -25,7 +25,6 @@ function Login(props) {
       })
       .then(
         (response) => {
-          console.log(response);
           props.setAuthInfo(response.data);
           history.push("/");
         },
@@ -35,24 +34,6 @@ function Login(props) {
         }
       );
   };
-  // const handleRegistration = (e) => {
-  //   e.preventDefault();
-  //   axios
-  //     .post(apiLink + "register/", {
-  //       username: userName,
-  //       password: password,
-  //     })
-  //     .then(
-  //       (response) => {
-  //         console.log(response);
-  //         props.setAuthInfo(response.data);
-  //         history.push("/");
-  //       },
-  //       (error) => {
-  //         console.log(error);
-  //       }
-  //     );
-  // };
   return (
     <div id="screen">
       <div id="loginbox">

@@ -1,6 +1,174 @@
 import moment from "moment";
+import axios from "axios";
 
+// Used to prepend API calls
 export const apiLink = "http://127.0.0.1:8000/";
+/**
+ * Retrieves calendars and contained events from database
+ * @param  {Object}     authInfo        State that holds login information (username and token)
+ * @param  {function}   updateCalendars Holds organized data from database
+ * @return {void}
+ */
+export function getCalendars(authInfo, updateCalendars) {
+  // Prepares configuration for GET request
+  const config = {
+    params: {
+      username: authInfo["username"],
+    },
+    headers: {
+      Authorization: `Token ${authInfo["token"]}`,
+    },
+  };
+  // Sends request through axios
+  axios.get(apiLink + "get-calendars/", config).then(
+    (response) => {
+      console.log(response);
+      for (const group in response.data) {
+        const calendars = response.data[group];
+        for (const calendar in calendars) {
+          // Sets default visibility of calendars to true; can be toggled by user
+          response.data[group][calendar]["visibility"] = true;
+          // Generates random color for calendar events
+          let color = Math.floor(Math.random() * 16777215).toString(16);
+          if (color.length < 6) {
+            color = "f".concat(color);
+          }
+          response.data[group][calendar]["color"] = color;
+        }
+      }
+      updateCalendars(response.data);
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+}
+/**
+ * Organizes events by date
+ * @param  {Obj} calendars Contains all retrieved calendars and events
+ * @param  {Obj} eventList Object that will be populated with Date : [events] key-value pairs
+ * @return {void}
+ */
+export function extractEvents(calendars, eventList) {
+  let calendarList = Object.keys(calendars);
+  calendarList.forEach((calendar) => {
+    let currentCalendar = calendars[calendar];
+    if (currentCalendar["visibility"]) {
+      let events = Object.values(currentCalendar);
+      events.forEach((eventItem) => {
+        // filters out visibility and color values stored in calendar key
+        if (typeof eventItem !== "boolean" && typeof eventItem !== "string") {
+          let formattedDate = moment
+            .utc(eventItem["start_date"])
+            .format("MMM-DD-YYYY");
+          eventItem["color"] = currentCalendar["color"];
+          // creates key-value pair for the specified date if not already existing
+          if (eventList[formattedDate]) {
+            eventList[formattedDate].push(eventItem);
+          } else {
+            eventList[formattedDate] = [eventItem];
+          }
+        }
+      });
+    }
+  });
+}
+/**
+ * Sorts events by start time ascending, then end time descending
+ * @param  {Obj} eventList List of events to be sorted; events all start on the same day
+ * @return {Array}         Sorted array of events
+ */
+export function sortEvents(eventList) {
+  /**
+   * Implementation of merge sort for event objects
+   * @param  {Array}  left     left array
+   * @param  {Array}  right    right array
+   * @param  {String} dateType Used to signal the correct comparison function
+   * @return {Array}           Sorted array
+   */
+  const merge = (left, right, dateType) => {
+    let result = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+
+    /**
+     * Comparison function that changes based on dateType
+     * @param  {Moment obj} date1 first date
+     * @param  {Moment obj} date2 second date
+     * @return {Boolean}          desired boolean result of comparison
+     */
+    let compare = (date1, date2) => {
+      return date1.isBefore(date2);
+    };
+    if (dateType === "end_date") {
+      compare = (date1, date2) => {
+        return date1.isAfter(date2);
+      };
+    }
+    while (leftIndex < left.length && rightIndex < right.length) {
+      if (
+        compare(
+          moment(left[leftIndex][dateType]),
+          moment(right[rightIndex][dateType])
+        )
+      ) {
+        result.push(left[leftIndex]);
+        leftIndex++;
+      } else {
+        result.push(right[rightIndex]);
+        rightIndex++;
+      }
+    }
+    result =
+      leftIndex === left.length
+        ? result.concat(right.slice(rightIndex))
+        : result.concat(left.slice(leftIndex));
+    return result;
+  };
+  /**
+   * Initiates recursive mergesort algorithm
+   * @param  {Array}  arr      Event array
+   * @param  {String} dateType Used in merge sort algorithm
+   * @return {Array}           Sorted array
+   */
+  const mergeSort = (arr, dateType) => {
+    if (arr.length === 1 || arr.length === 0) {
+      return arr;
+    }
+    const mid = Math.floor(arr.length / 2);
+    const left = arr.slice(0, mid);
+    const right = arr.slice(mid);
+    return merge(
+      mergeSort(left, dateType),
+      mergeSort(right, dateType),
+      dateType
+    );
+  };
+
+  // Sorts by start_date ascending, then end_date descending
+  let firstSort = mergeSort(eventList, "start_date");
+  let endDateSorted = [];
+  let limit = firstSort.length;
+  for (let i = 0; i < limit; i++) {
+    let endDateSorter = [firstSort[i]];
+    // Collects all dates that start at the same time to ensure start_date ascending order is preserved
+    while (i < limit - 1) {
+      if (
+        moment(firstSort[i]["start_date"]).isSame(
+          firstSort[i + 1]["start_date"]
+        )
+      ) {
+        endDateSorter.push(firstSort[i + 1]);
+        i++;
+      } else {
+        break;
+      }
+    }
+    endDateSorted = endDateSorted.concat(mergeSort(endDateSorter, "end_date"));
+  }
+  return endDateSorted;
+}
+
 /**
  * Generates array that contains row arrays, which contain the "day" html elements that compose the month calendar
  * @param  {Moment obj} viewedMonth   Gives current date that contains current month

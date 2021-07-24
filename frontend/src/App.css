@@ -11,15 +11,21 @@
   height: 100%;
   width: 100%;
   position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 #pop-up > * {
   display: flex;
 }
 #popupBox {
-  height: 110px;
-  width: 224px;
+  height: fit-content;
+  width: 300px;
   border: 1px solid black;
   flex-direction: column;
+}
+textarea {
+  resize: none;
 }
 #big-container {
   width: 100%;

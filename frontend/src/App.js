@@ -1,41 +1,94 @@
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import "./App.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import moment from "moment";
 import MonthCalendar from "./components/MonthCalendar";
 import MonthGrid from "./components/MonthGrid";
 import Popup from "./components/Popup";
 import Login from "./components/Login";
-import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
+import EventForm from "./components/EventForm";
+import DayDisplay from "./components/DayDisplay";
+import { Route, Switch, Link, useHistory } from "react-router-dom";
+import axios from "axios";
+import { apiLink, extractEvents, getCalendars } from "./components/utils";
 
+const formTesting = true;
+
+// helper method that is used for formatting event information in the year view
+const popUpWrapper = (content) => {
+  if (Array.isArray(content)) {
+    content = content.map((item) => {
+      let time = moment.utc(item.start_date).format("h:mma");
+      return <div>{`${time} ${item.title}`}</div>;
+    });
+  }
+  return <div id="popupBox">{content}</div>;
+};
 function App() {
-  let testingDates = { "Jul-8-2021": ["bruh", "no"] };
-  const [sidebarOpen, sidebarToggle] = useState(true);
+  const [authInfo, setAuthInfo] = useState({}); // Stores login information and token authentication
+  const [calendars, updateCalendars] = useState({}); // Stores calendar information retrieved from database
+  const [generatedEventList, updateList] = useState({}); // Sorts events by date eg. { 'Date' : [events] }
+  const [formFlag, toggleFormFlag] = useState(false); // Used to handle pop-up behavior with forms
+  const [sidebarOpen, sidebarToggle] = useState(true); // Used to control visibility of sidebar
+  const [displayOption, displayToggle] = useState("Year"); // Controls display options ("Day", "Month", "Year")
+  const [selectedDay, changeSelectedDay] = useState(moment()); // Stores the day that is focused on (denoted by gray circle in UI); default day that is chosen if event creation form is opened
+  const [viewedDay, changeViewedDay] = useState(moment()); // Allows for viewing of different months in the sidebar calendar without changing selected day
+  const [popUpContent, changeContent] = useState(); // Manages pop-up information (forms, event information)
+  const [popUpCoordinates, changeCoordinates] = useState({ x: 0, y: 0 }); // Positions pop-ups
+  const [dropDownOptions, setDropDownOptions] = useState([]); // Used as options during event creation; allows for placing events under different calendars
+  const history = useHistory(); // Allows for redirects
 
+  // Retrieves calendars upon login
+  useEffect(() => {
+    getCalendars(authInfo, updateCalendars);
+  }, [authInfo]);
+
+  // Extracts useful information after database call
+  useEffect(() => {
+    updateList(
+      (() => {
+        let eventList = {};
+        if (calendars["own_calendars"]) {
+          extractEvents(calendars["own_calendars"], eventList);
+          extractEvents(calendars["subscribed_calendars"], eventList);
+        }
+        return eventList;
+      })()
+    );
+    setDropDownOptions(
+      (() => {
+        const calendarNames = {};
+        const ownCalendars = calendars["own_calendars"];
+        for (const calendar in ownCalendars) {
+          const parsedCalendar = calendar.split("\\");
+          calendarNames[parsedCalendar[1]] = parsedCalendar[0];
+        }
+        return calendarNames;
+      })()
+    );
+  }, [calendars]);
+
+  // Used as onClick for sidebar toggle button
   function sidebarOnClick() {
     sidebarToggle(!sidebarOpen);
   }
 
-  const [displayOption, displayToggle] = useState("Day");
-
-  const displaySelect = (e) => {
-    displayToggle(e.target.value);
-  };
-
-  const [selectedDay, changeSelectedDay] = useState(moment());
-  const [viewedDay, changeViewedDay] = useState(moment());
-  const today = moment().format("MMM-D-YYYY");
+  // Sets selected day to the current day and sets view on that day
   const todayButtonClick = () => {
     changeSelectedDay(moment());
     changeViewedDay(moment());
   };
 
-  let headerMessage = "";
-  let backClick = () => {};
-  let forwardClick = () => {};
-  const [popUpContent, changeContent] = useState(<div></div>);
-  const [popUpCoordinates, changeCoordinates] = useState({ x: 0, y: 0 });
+  // Variables that be initialized by chooseDisplay and used in Header component
+  let headerMessage;
+  let backClick;
+  let forwardClick;
+
+  /**
+   * Generates UI depending on desired display option
+   * @return {JSX Element} Will be displayed after generation
+   */
   function chooseDisplay() {
     switch (displayOption) {
       case "Day":
@@ -48,7 +101,18 @@ function App() {
           changeSelectedDay(moment(selectedDay.add(1, "day")));
           changeViewedDay(moment(selectedDay));
         };
-        return "Day";
+        return (
+          <DayDisplay
+            selectedDay={selectedDay}
+            events={generatedEventList}
+            changeContent={changeContent}
+            dropDownOptions={dropDownOptions}
+            authInfo={authInfo}
+            toggleFormFlag={toggleFormFlag}
+            updateCalendars={updateCalendars}
+            history={history}
+          />
+        );
       case "Month":
         headerMessage = selectedDay.format("MMMM YYYY");
         backClick = () => {
@@ -84,19 +148,26 @@ function App() {
         let months = moment.months();
         let yearMonths = [];
         let currentYear = selectedDay.format("YYYY");
-        //let year = selectedDay.format
+        const calendarClick = (e) => {
+          let date = e.target.id;
+          changeSelectedDay(moment(date));
+          changeViewedDay(moment(date));
+
+          if (generatedEventList[date] !== undefined) {
+            changeContent(popUpWrapper(generatedEventList[date]));
+          } else {
+            changeContent(popUpWrapper("No events scheduled"));
+          }
+          changeCoordinates({ x: e.nativeEvent.x, y: e.nativeEvent.y });
+        };
         months.forEach((month) => {
           yearMonths.push(
             <div className="yearMonths" key={month}>
               <MonthCalendar
                 sidebar={false}
-                viewDay={moment(month + currentYear)}
-                day={selectedDay}
+                viewedDay={moment(month + currentYear)}
                 changeView={changeViewedDay}
-                changeSelectedDay={changeSelectedDay}
-                changeContent={changeContent}
-                changeCoordinates={changeCoordinates}
-                testingDates={testingDates}
+                calendarClick={calendarClick}
               />
             </div>
           );
@@ -106,70 +177,105 @@ function App() {
         return;
     }
   }
-  let bruh = chooseDisplay();
+
+  const [display, changeDisplay] = useState(chooseDisplay()); // Stores the JSX element(s) that will change on display option change
+
+  // Changes display after another day is selected, display option is changed, login/logout, and if new events are submitted
+  useEffect(() => {
+    changeDisplay(chooseDisplay());
+  }, [selectedDay, displayOption, authInfo, calendars, generatedEventList]);
+
+  // Style object for html container that is beside the sidebar
   let margin = sidebarOpen ? "auto" : "60px";
   let bigContainerStyle = {
     marginLeft: margin,
     minWidth: "775px",
   };
-  let mainSelectedDay = selectedDay.format("MMM-D-YYYY");
-  let styleTag = `
-  div#${mainSelectedDay}.currentMonth{
+
+  // Colors the divs containing the selected day (mainSelectedDay) and the current day (today)
+  const mainSelectedDay = selectedDay.format("MMM-D-YYYY");
+  const today = moment().format("MMM-D-YYYY");
+  const styleTag = `
+  .row1 div#${mainSelectedDay}.currentMonth{
     background-color: #d2e3fc;
   }
   div#${today}.currentMonth{
-    background-color: #1a73e8;
+    background-color: #1a73e8 !important;
   }
   `;
-  const [authInfo, setAuthInfo] = useState({});
+  /**
+   * Defines onClick behavior for the create button; presents for if logged in, redirects to login in screen otherwise
+   * @return {void}
+   */
+  const createEventForm = () => {
+    if (!authInfo["token"] && !formTesting) {
+      history.push("/login");
+    } else {
+      changeContent(
+        <EventForm
+          selectedDay={selectedDay}
+          authInfo={authInfo}
+          dropDownOptions={dropDownOptions}
+          updateCalendars={updateCalendars}
+          changeContent={changeContent}
+        />
+      );
+      toggleFormFlag(true);
+    }
+  };
   return (
-    <Router>
-      <Switch>
-        <Route path="/login">
-          <Login setAuthInfo={setAuthInfo} />
-        </Route>
-        <Route path="/">
-          <div className="App">
-            {displayOption === "Year" && (
-              <div id="pop-up-container">
-                <Popup
-                  coords={popUpCoordinates}
-                  popUpContent={popUpContent}
-                  changeContent={changeContent}
-                  changeCoordinates={changeCoordinates}
-                />
-              </div>
+    <Switch>
+      <Route path="/login">
+        <Login setAuthInfo={setAuthInfo} />
+      </Route>
+      <Route path="/">
+        <div className="App">
+          <div id="pop-up-container">
+            {popUpContent && (
+              <Popup
+                coords={popUpCoordinates}
+                popUpContent={popUpContent}
+                changeContent={changeContent}
+                changeCoordinates={changeCoordinates}
+                formFlag={formFlag}
+                toggleFormFlag={toggleFormFlag}
+              />
             )}
-            <Header
-              menuButton={sidebarOnClick}
-              displaySelect={displaySelect}
-              headerMessage={headerMessage}
-              todayButtonClick={todayButtonClick}
-              backClick={backClick}
-              forwardClick={forwardClick}
-              changeDisplayValue={displayOption}
-              username={authInfo.username}
-              setAuthInfo={setAuthInfo}
-            />
-            <button id="create">Create</button>
-            <div className="row1">
-              {sidebarOpen && (
-                <Sidebar
-                  monthCalendarDay={selectedDay}
-                  monthCalendarChange={changeSelectedDay}
-                  viewDay={viewedDay}
-                  monthCalendarViewChange={changeViewedDay}
-                />
-              )}
-              <div id="big-container" style={bigContainerStyle}>
-                <div id="inner">{bruh}</div>
-                <style scoped>{styleTag}</style>
-              </div>
+          </div>
+
+          <Header
+            menuButton={sidebarOnClick}
+            displayToggle={displayToggle}
+            headerMessage={headerMessage}
+            todayButtonClick={todayButtonClick}
+            backClick={backClick}
+            forwardClick={forwardClick}
+            changeDisplayValue={displayOption}
+            username={authInfo.username}
+            setAuthInfo={setAuthInfo}
+            updateCalendars={updateCalendars}
+          />
+          <button id="create" onClick={createEventForm}>
+            Create
+          </button>
+          <div className="row1">
+            {sidebarOpen && (
+              <Sidebar
+                changeSelectedDay={changeSelectedDay}
+                viewedDay={viewedDay}
+                changeView={changeViewedDay}
+                calendars={calendars}
+                updateCalendars={updateCalendars}
+              />
+            )}
+            <div id="big-container" style={bigContainerStyle}>
+              <div id="inner">{display}</div>
+              <style scoped="true">{styleTag}</style>
             </div>
           </div>
-        </Route>
-      </Switch>
-    </Router>
+        </div>
+      </Route>
+    </Switch>
   );
 }
 
