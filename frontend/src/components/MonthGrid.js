@@ -6,12 +6,15 @@ import moment from "moment";
 
 /**
  * Creates single month display
+ * @component
  * @param  {Object} props Passing down viewedDay and setState functions for selectedDay, viewedDay, and displayToggle
- * @return {<div>}        String representation of viewedMonth
+ * @return {JSX Element}
  */
 function MonthGrid(props) {
+  // saves copy of viewedDay
   let viewedMonth = moment(props.viewedDay);
 
+  // generates list of divs containing the weekday names
   let daysOfWeek = moment.weekdaysShort();
 
   let weekDayHeader = daysOfWeek.map((dayName) => {
@@ -21,6 +24,15 @@ function MonthGrid(props) {
       </div>
     );
   });
+
+  /**
+   * Creates appropriate JSX element for each month day
+   * @param  {String} id              HTML attributes
+   * @param  {String} element
+   * @param  {String} className
+   * @param  {function} calendarClick handles onClick behavior
+   * @return {JSX Element}
+   */
   const divWrapper = (id, element, classname, calendarClick) => {
     return (
       <div class="grid-cell">

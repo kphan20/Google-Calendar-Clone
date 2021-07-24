@@ -4,33 +4,12 @@ import "./MonthCalendar.css";
 import DayClicker from "./DayClicker";
 import { generateCalendar } from "./utils";
 
-const popUpWrapper = (content) => {
-  if (Array.isArray(content)) {
-    content = content.map((item) => {
-      return <div>{item}</div>;
-    });
-  }
-  return <div id="popupBox">{content}</div>;
-};
 function MonthCalendar(props) {
-  let selectedDay = moment(props.viewDay);
+  let selectedDay = moment(props.viewedDay);
   let weekdays = moment.weekdays();
   let weekdaysmin = moment.weekdaysMin();
   let calendarHeader = [];
 
-  const calendarClick = (e) => {
-    let date = e.target.id;
-    props.changeSelectedDay(moment(date));
-    props.changeView(moment(date));
-    if (!props.sidebar) {
-      if (props.testingDates[date] !== undefined) {
-        props.changeContent(popUpWrapper(props.testingDates[date]));
-      } else {
-        props.changeContent(popUpWrapper("No events scheduled"));
-      }
-      props.changeCoordinates({ x: e.nativeEvent.x, y: e.nativeEvent.y });
-    }
-  };
   weekdays.forEach((day, index) => {
     calendarHeader.push(
       <div className="calendarBlock">
@@ -38,6 +17,11 @@ function MonthCalendar(props) {
       </div>
     );
   });
+  /**
+   * Creates appropriate JSX element for each month day
+   * @param  {Obj} props calendars, changeSelectedDay, changeView, updateCalendars, viewedDay
+   * @return {JSX Element}   Sidebar
+   */
   const divWrapper = (id, element, classname, calendarClick) => {
     return (
       <DayClicker
@@ -51,7 +35,12 @@ function MonthCalendar(props) {
   const maxSize = (arr) => {
     return 42;
   };
-  let rows = generateCalendar(selectedDay, divWrapper, calendarClick, maxSize);
+  let rows = generateCalendar(
+    selectedDay,
+    divWrapper,
+    props.calendarClick,
+    maxSize
+  );
   const nextMonth = () => {
     props.changeView(selectedDay.add(1, "month"));
   };

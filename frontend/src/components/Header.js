@@ -9,6 +9,10 @@ function Header(props) {
   let srcset = `//ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_${day}_2x.png 2x ,//ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_${day}_2x.png# 1x`;
   const logOut = () => {
     props.setAuthInfo({});
+    props.updateCalendars({});
+  };
+  const displaySelect = (e) => {
+    props.displayToggle(e.target.value);
   };
   let loginButton = props.username ? (
     <>
@@ -71,7 +75,7 @@ function Header(props) {
           <select
             id="dropdown"
             name="Filler v"
-            onChange={props.displaySelect}
+            onChange={displaySelect}
             value={props.changeDisplayValue}
           >
             <option value="Day">Day</option>
