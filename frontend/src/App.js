@@ -9,9 +9,8 @@ import Popup from "./components/Popup";
 import Login from "./components/Login";
 import EventForm from "./components/EventForm";
 import DayDisplay from "./components/DayDisplay";
-import { Route, Switch, Link, useHistory } from "react-router-dom";
-import axios from "axios";
-import { apiLink, extractEvents, getCalendars } from "./components/utils";
+import { Route, Switch, useHistory } from "react-router-dom";
+import { extractEvents, getCalendars } from "./components/utils";
 
 const formTesting = true;
 
@@ -79,7 +78,47 @@ function App() {
     changeSelectedDay(moment());
     changeViewedDay(moment());
   };
-
+  const editEventForm = (e) => {
+    const attrs = e.target.attributes;
+    changeContent(
+      <EventForm
+        request="put"
+        selectedDay={attrs.starttime.value}
+        endDate={attrs.end.value}
+        calendar={attrs.calendar.value}
+        eventID={attrs.eventID.value}
+        dropDownOptions={dropDownOptions}
+        authInfo={authInfo}
+        updateCalendars={updateCalendars}
+        changeContent={changeContent}
+        toggleFormFlag={toggleFormFlag}
+      />
+    );
+    toggleFormFlag(true);
+  };
+  const clickEventCreate = (e) => {
+    if (!authInfo["token"]) {
+      history.push("/login");
+    } else {
+      const startTime = e.target.title;
+      const eventDate = moment(selectedDay).set({
+        hour: parseInt(startTime),
+        minute: (parseFloat(startTime) % 1) * 60,
+      });
+      changeContent(
+        <EventForm
+          request="post"
+          selectedDay={eventDate}
+          dropDownOptions={dropDownOptions}
+          authInfo={authInfo}
+          updateCalendars={updateCalendars}
+          changeContent={changeContent}
+          toggleFormFlag={toggleFormFlag}
+        />
+      );
+      toggleFormFlag(true);
+    }
+  };
   // Variables that be initialized by chooseDisplay and used in Header component
   let headerMessage;
   let backClick;
@@ -111,6 +150,8 @@ function App() {
             toggleFormFlag={toggleFormFlag}
             updateCalendars={updateCalendars}
             history={history}
+            eventEdit={editEventForm}
+            clickEventCreate={clickEventCreate}
           />
         );
       case "Month":
@@ -183,7 +224,14 @@ function App() {
   // Changes display after another day is selected, display option is changed, login/logout, and if new events are submitted
   useEffect(() => {
     changeDisplay(chooseDisplay());
-  }, [selectedDay, displayOption, authInfo, calendars, generatedEventList]);
+  }, [
+    selectedDay,
+    displayOption,
+    authInfo,
+    calendars,
+    generatedEventList,
+    //chooseDisplay,
+  ]);
 
   // Style object for html container that is beside the sidebar
   let margin = sidebarOpen ? "auto" : "60px";
@@ -213,16 +261,19 @@ function App() {
     } else {
       changeContent(
         <EventForm
+          request="post"
           selectedDay={selectedDay}
           authInfo={authInfo}
           dropDownOptions={dropDownOptions}
           updateCalendars={updateCalendars}
           changeContent={changeContent}
+          toggleFormFlag={toggleFormFlag}
         />
       );
       toggleFormFlag(true);
     }
   };
+
   return (
     <Switch>
       <Route path="/login">

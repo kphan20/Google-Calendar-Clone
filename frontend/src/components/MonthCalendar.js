@@ -3,7 +3,12 @@ import moment from "moment";
 import "./MonthCalendar.css";
 import DayClicker from "./DayClicker";
 import { generateCalendar } from "./utils";
-
+/**
+ * Creates single month display for "Year" display option and sidebar calendar
+ * @component
+ * @param  {Object} props viewedDay, calendarClick, changeView, sidebar
+ * @return {JSX Element}
+ */
 function MonthCalendar(props) {
   let selectedDay = moment(props.viewedDay);
   let weekdays = moment.weekdays();
@@ -19,8 +24,11 @@ function MonthCalendar(props) {
   });
   /**
    * Creates appropriate JSX element for each month day
-   * @param  {Obj} props calendars, changeSelectedDay, changeView, updateCalendars, viewedDay
-   * @return {JSX Element}   Sidebar
+   * @param  {String} id              HTML attributes
+   * @param  {String} element
+   * @param  {String} className
+   * @param  {function} calendarClick handles onClick behavior
+   * @return {JSX Element}
    */
   const divWrapper = (id, element, classname, calendarClick) => {
     return (
@@ -32,9 +40,11 @@ function MonthCalendar(props) {
       />
     );
   };
+  // function used in generateCalendar call to get calendar size (6 weeks)
   const maxSize = (arr) => {
     return 42;
   };
+
   let rows = generateCalendar(
     selectedDay,
     divWrapper,

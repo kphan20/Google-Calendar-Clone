@@ -5,17 +5,21 @@ import axios from "axios";
 import "./EventForm.css";
 import { apiLink, getCalendars } from "./utils";
 
+const apiEndpoints = {
+  post: "event-create/",
+  put: "edit-event/",
+};
 function EventForm(props) {
   const [eventTitle, changeTitle] = useState("");
   const [eventStartDate, changeStartDate] = useState(moment(props.selectedDay));
   const [eventEndDate, changeEndDate] = useState(
-    moment(eventStartDate).add(1, "hour")
+    props.endDate
+      ? moment(props.endDate)
+      : moment(eventStartDate).add(1, "hour")
   );
   const [description, changeDescription] = useState("");
-  const [formViewStartDay, changeStartView] = useState(
-    moment(props.selectedDay)
-  );
-  const [formViewEndDay, changeEndView] = useState(moment());
+  const [formViewStartDay, changeStartView] = useState(moment(eventStartDate));
+  const [formViewEndDay, changeEndView] = useState(moment(eventEndDate));
   const [startTimeMeridiem, updateStartMeridiem] = useState(
     eventStartDate.format("a")
   );
@@ -63,7 +67,7 @@ function EventForm(props) {
   // })();
   let dropDownOptions = props.dropDownOptions;
   const [calendarID, changeCalendar] = useState(
-    Object.values(dropDownOptions)[0]
+    props.calendar || Object.values(dropDownOptions)[0]
   );
   const dropDownSelector = (e) => {
     console.log(e.target.value);
@@ -102,14 +106,19 @@ function EventForm(props) {
       const headers = {
         Authorization: `Token ${props.authInfo["token"]}`,
       };
-      axios
-        .post(apiLink + "event-create/", data, { headers: headers })
+      axios({
+        method: props.request,
+        url: `${apiLink}${apiEndpoints[props.request]}${props.eventID || ""}`,
+        data: data,
+        headers: headers,
+      })
         .then(
           (response) => {
             console.log(response);
           },
           (error) => {
             console.log("event creation failed");
+            console.log(error);
           }
         )
         .then(() => {
@@ -157,15 +166,27 @@ function EventForm(props) {
     });
   };
   return (
-    <div id="popupBox" class="eventForm">
+    <div id="popupBox" className="eventForm">
       <style scoped>{styleTag}</style>
       <form onSubmit={handleSubmit}>
-        <input
-          name="title"
-          placeholder="Title"
-          onChange={handleChange(changeTitle)}
-          maxLength="20"
-        />
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <input
+            name="title"
+            placeholder="Title"
+            onChange={handleChange(changeTitle)}
+            maxLength="20"
+          />
+          <button
+            type="button"
+            id="x"
+            onClick={() => {
+              props.changeContent();
+              props.toggleFormFlag(false);
+            }}
+          >
+            x
+          </button>
+        </div>
         <br />
         <label>Select start date:</label>
         <div id="startCalendar">

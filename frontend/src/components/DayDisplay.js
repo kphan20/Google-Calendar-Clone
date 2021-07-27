@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
 import { sortEvents } from "./utils";
-import EventForm from "./EventForm";
+import "./DayDisplay.css";
 const heightPixels = 44;
 function DayDisplay(props) {
   let day = moment(props.selectedDay);
@@ -9,25 +9,28 @@ function DayDisplay(props) {
   for (let x = 0; x < 24; x++) {
     hourGrid.push(x);
   }
-  const eventCreate = (startTime) => (e) => {
-    if (!props.authInfo["token"]) {
-      props.history.push("/login");
-    } else {
-      const eventDate = moment(props.selectedDay).set({
-        hour: parseInt(startTime),
-      });
-      props.changeContent(
-        <EventForm
-          selectedDay={eventDate}
-          dropDownOptions={props.dropDownOptions}
-          authInfo={props.authInfo}
-          updateCalendars={props.updateCalendars}
-          changeContent={props.changeContent}
-        />
-      );
-      props.toggleFormFlag(true);
-    }
-  };
+  // const eventCreate = (startTime) => (e) => {
+  //   if (!props.authInfo["token"]) {
+  //     props.history.push("/login");
+  //   } else {
+  //     const eventDate = moment(props.selectedDay).set({
+  //       hour: parseInt(startTime),
+  //       minute: (parseFloat(startTime) % 1) * 60,
+  //     });
+  //     props.changeContent(
+  //       <EventForm
+  //         request="post"
+  //         selectedDay={eventDate}
+  //         dropDownOptions={props.dropDownOptions}
+  //         authInfo={props.authInfo}
+  //         updateCalendars={props.updateCalendars}
+  //         changeContent={props.changeContent}
+  //       />
+  //     );
+  //     props.toggleFormFlag(true);
+  //   }
+  // };
+
   const timeLabels = hourGrid.map((number) => {
     return <div style={{ height: `${heightPixels}px` }}>{number}</div>;
   });
@@ -42,14 +45,16 @@ function DayDisplay(props) {
         }}
       >
         <div
-          style={{ height: "50%", width: "100%" }}
-          onClick={eventCreate(number)}
+          className="grid-event-create"
+          title={number}
+          onClick={props.clickEventCreate}
         >
           &nbsp;
         </div>
         <div
-          style={{ height: "50%", width: "100%" }}
-          onClick={eventCreate(number + 0.5)}
+          className="grid-event-create"
+          title={number + 0.5}
+          onClick={props.clickEventCreate}
         >
           &nbsp;
         </div>
@@ -69,7 +74,7 @@ function DayDisplay(props) {
           dayEvents.forEach((eventItem, index, arr) => {
             let startTime = moment.utc(eventItem["start_date"]);
             let topMargin =
-              parseInt(startTime.format("k")) * heightPixels +
+              parseInt(startTime.format("H")) * heightPixels +
               (parseInt(startTime.format("m")) / 60) * heightPixels;
             let endTime = moment.utc(eventItem["end_date"]);
             let height = endTime.isAfter(day, "day")
@@ -95,6 +100,11 @@ function DayDisplay(props) {
             // }
             eventList.push(
               <div
+                starttime={startTime.format("YYYY-MM-DDTHH:mm:ss")}
+                end={endTime.format("YYYY-MM-DDTHH:mm:ss")}
+                calendar={eventItem["calendarID"]}
+                eventID={eventItem["event_id"]}
+                request="put"
                 style={{
                   position: "absolute",
                   top: `${topMargin}px`,
@@ -107,6 +117,7 @@ function DayDisplay(props) {
                   borderRadius: "25px",
                   overflow: "hidden",
                 }}
+                onClick={props.eventEdit}
               >
                 &nbsp;&nbsp;{eventItem.title || "(No title)"}
               </div>
@@ -116,36 +127,19 @@ function DayDisplay(props) {
         return eventList;
       })()
     );
-  }, [props.events, props.selectedDay]);
+  }, [props.events, props.selectedDay, day, props.eventEdit]);
   return (
-    <div style={{ width: "100%", position: "relative" }}>
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <p>{day.format("ddd")}</p>
+    <div id="day-display">
+      <div id="day-display-day">
+        <p>{day.format("ddd")} &nbsp;</p>
         <p>{day.format("D")}</p>
       </div>
-      <div style={{ display: "flex", justifyContent: "left", height: "100%" }}>
-        <div style={{ height: "100%" }}>{timeLabels}</div>
-        <div style={{ position: "relative", width: "100%" }}>
-          <div style={{ zIndex: "1", position: "absolute", width: "100%" }}>
-            {grid}
-          </div>
-          <div
-            id="eventsContainer"
-            style={{
-              position: "absolute",
-              height: "100%",
-              width: "100%",
-            }}
-          >
-            <div
-              style={{
-                position: "relative",
-                height: "100%",
-                overflow: "hidden",
-              }}
-            >
-              {displayEvents}
-            </div>
+      <div id="day-display-calendar-holder">
+        <div id="time-labels">{timeLabels}</div>
+        <div id="day-grid-container">
+          <div id="day-grid">{grid}</div>
+          <div id="eventsContainer">
+            <div id="events-container">{displayEvents}</div>
           </div>
         </div>
       </div>
