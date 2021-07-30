@@ -3,17 +3,32 @@ import "./Header.css";
 import moment from "moment";
 import { Link } from "react-router-dom";
 
+/**
+ * Website header
+ * @component
+ * @param  {Object} props setAuthInfo, updateCalendars, displayToggle, username, menuButton, todayButtonClick,
+ *  forwardClick, backClick, headerMessage, changeDisplayValue
+ * @return {JSX Element}
+ */
 function Header(props) {
+  // Used for information displayed in header
   let day = moment().format("D");
   let src = `//ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_${day}_2x.png#`;
-  let srcset = `//ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_${day}_2x.png 2x ,//ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_${day}_2x.png# 1x`;
+  let srcset = `//ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_${day}_2x.png 2x ,
+  //ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_${day}_2x.png# 1x`;
+
+  // Handles logout behavior by clearing authorization information and calendars
   const logOut = () => {
     props.setAuthInfo({});
     props.updateCalendars({});
   };
+
+  // Changes display settings
   const displaySelect = (e) => {
     props.displayToggle(e.target.value);
   };
+
+  // Determines correct button to display based on user credentials
   let loginButton = props.username ? (
     <>
       <p>Welcome {props.username}!</p>
@@ -33,7 +48,7 @@ function Header(props) {
           <div className="column" id="menu-button">
             <button id="menu-toggle" onClick={props.menuButton}>
               <img
-                src="https://pics.freeicons.io/uploads/icons/png/15211315791553239378-512.png"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Hamburger_icon.svg/64px-Hamburger_icon.svg.png"
                 alt=""
                 width="50"
                 height="50"

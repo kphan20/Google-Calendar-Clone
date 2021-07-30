@@ -1,0 +1,42 @@
+.grid-event-create {
+  height: 50%;
+  width: 100%;
+}
+#day-display,
+#day-grid-container {
+  width: 100%;
+  position: relative;
+}
+
+#day-display-day {
+  display: flex;
+  justify-content: center;
+}
+
+#day-display-calendar-holder {
+  display: flex;
+  justify-content: left;
+  height: 100%;
+}
+
+#time-labels {
+  height: 100%;
+}
+
+#day-grid {
+  z-index: 1;
+  position: absolute;
+  width: 100%;
+}
+
+#eventsContainer {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+}
+
+#events-container {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}

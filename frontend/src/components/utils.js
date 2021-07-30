@@ -50,18 +50,20 @@ export function getCalendars(authInfo, updateCalendars) {
  * @return {void}
  */
 export function extractEvents(calendars, eventList) {
-  let calendarList = Object.keys(calendars);
+  const calendarList = Object.keys(calendars);
   calendarList.forEach((calendar) => {
-    let currentCalendar = calendars[calendar];
+    const currentCalendar = calendars[calendar];
     if (currentCalendar["visibility"]) {
-      let events = Object.values(currentCalendar);
+      const calendarID = calendar.split("\\")[0];
+      const events = Object.values(currentCalendar);
       events.forEach((eventItem) => {
         // filters out visibility and color values stored in calendar key
         if (typeof eventItem !== "boolean" && typeof eventItem !== "string") {
-          let formattedDate = moment
+          const formattedDate = moment
             .utc(eventItem["start_date"])
-            .format("MMM-DD-YYYY");
+            .format("MMM-D-YYYY");
           eventItem["color"] = currentCalendar["color"];
+          eventItem["calendarID"] = calendarID;
           // creates key-value pair for the specified date if not already existing
           if (eventList[formattedDate]) {
             eventList[formattedDate].push(eventItem);

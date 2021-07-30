@@ -1,5 +1,11 @@
 import React from "react";
 
+/**
+ * Sidebar component that displays user's calendars and allows for toggling their events' visibility
+ * @component
+ * @param  {Obj} props   name, visibilityToggle, checked, name
+ * @return {JSX Element}
+ */
 function CalendarCheckbox(props) {
   return (
     <div className="sidebarcalendaroptions">
