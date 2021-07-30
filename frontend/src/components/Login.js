@@ -4,18 +4,30 @@ import "./Login.css";
 import { apiLink } from "./utils";
 import axios from "axios";
 
+/**
+ * Login/register screen
+ * @component
+ * @param  {Object} props setAuthInfo
+ * @return {JSX Element}
+ */
 function Login(props) {
-  const [userName, setUserName] = useState("");
-  const [password, setPassWord] = useState("");
-  const [isLogin, setIsLogin] = useState(true);
-  const history = useHistory();
+  const [userName, setUserName] = useState(""); // Controls username field
+  const [password, setPassWord] = useState(""); // Controls password field
+  const [isLogin, setIsLogin] = useState(true); // Used to switch between login and registration screens
+  const history = useHistory(); // Used to redirect to home page after login/registration
   const [errorMessage, setError] = useState("");
+
+  // used for button to switch between registration and login
   const changePage = () => {
     setIsLogin(!isLogin);
   };
+
+  // Used to change field states
   const handleChange = (changeFunction) => (e) => {
     changeFunction(e.target.value);
   };
+
+  // form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     axios

@@ -61,7 +61,7 @@ export function extractEvents(calendars, eventList) {
         if (typeof eventItem !== "boolean" && typeof eventItem !== "string") {
           const formattedDate = moment
             .utc(eventItem["start_date"])
-            .format("MMM-DD-YYYY");
+            .format("MMM-D-YYYY");
           eventItem["color"] = currentCalendar["color"];
           eventItem["calendarID"] = calendarID;
           // creates key-value pair for the specified date if not already existing

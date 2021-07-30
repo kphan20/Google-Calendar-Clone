@@ -1,10 +1,6 @@
 from copy import error
-from django.shortcuts import render
-from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
-from rest_framework import viewsets, permissions
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
@@ -18,6 +14,7 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import viewsets
 
 class CustomAuthToken(ObtainAuthToken):
     """Extension of ObtainAuthToken class to customize response"""

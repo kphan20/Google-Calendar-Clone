@@ -67,7 +67,6 @@ function App() {
       })()
     );
   }, [calendars]);
-
   // Used as onClick for sidebar toggle button
   function sidebarOnClick() {
     sidebarToggle(!sidebarOpen);

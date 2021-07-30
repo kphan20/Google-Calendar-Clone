@@ -2,35 +2,24 @@ import React, { useState, useEffect } from "react";
 import moment from "moment";
 import { sortEvents } from "./utils";
 import "./DayDisplay.css";
+
+// Constant used for calculations
 const heightPixels = 44;
+
+/**
+ * Component shown when "Day" display option is chosen
+ * @component
+ * @param  {Obj} props   selectedDay, clickEventCreate, events, eventEdit
+ * @return {JSX Element}
+ */
 function DayDisplay(props) {
   let day = moment(props.selectedDay);
   let hourGrid = [];
+
+  // Handles creation of background grid; could move to different module
   for (let x = 0; x < 24; x++) {
     hourGrid.push(x);
   }
-  // const eventCreate = (startTime) => (e) => {
-  //   if (!props.authInfo["token"]) {
-  //     props.history.push("/login");
-  //   } else {
-  //     const eventDate = moment(props.selectedDay).set({
-  //       hour: parseInt(startTime),
-  //       minute: (parseFloat(startTime) % 1) * 60,
-  //     });
-  //     props.changeContent(
-  //       <EventForm
-  //         request="post"
-  //         selectedDay={eventDate}
-  //         dropDownOptions={props.dropDownOptions}
-  //         authInfo={props.authInfo}
-  //         updateCalendars={props.updateCalendars}
-  //         changeContent={props.changeContent}
-  //       />
-  //     );
-  //     props.toggleFormFlag(true);
-  //   }
-  // };
-
   const timeLabels = hourGrid.map((number) => {
     return <div style={{ height: `${heightPixels}px` }}>{number}</div>;
   });
@@ -61,13 +50,17 @@ function DayDisplay(props) {
       </div>
     );
   });
-  const [displayEvents, changeDisplayEvents] = useState([]);
+
+  const [displayEvents, changeDisplayEvents] = useState([]); // holds events for display on that day
+
+  // Creates and stores list of JSX elements that will be displayed
   useEffect(() => {
     changeDisplayEvents(
       (() => {
         let dayEvents = sortEvents(
           props.events[day.format("MMM-D-YYYY")] || []
         );
+        console.log(dayEvents);
         let eventList = [];
         if (dayEvents) {
           let leftMargin = 0;
@@ -92,12 +85,6 @@ function DayDisplay(props) {
                 }
               }
             }
-            // if (
-            //   arr[index - 1] &&
-            //   moment.utc(arr[index - 1]["end_date"]) > startTime
-            // ) {
-            //   leftMargin += 80;
-            // }
             eventList.push(
               <div
                 starttime={startTime.format("YYYY-MM-DDTHH:mm:ss")}
@@ -127,7 +114,7 @@ function DayDisplay(props) {
         return eventList;
       })()
     );
-  }, [props.events, props.selectedDay, day, props.eventEdit]);
+  }, [props.events, props.selectedDay]);
   return (
     <div id="day-display">
       <div id="day-display-day">

@@ -2,17 +2,29 @@ import React, { useState } from "react";
 import "./CalendarsButton.css";
 import CalendarCheckbox from "./CalendarCheckbox";
 
+/**
+ * Sidebar component that contains CalendarCheckBox components
+ * @component
+ * @param  {Obj} props   calendars, group, updateCalendars, name
+ * @return {JSX Element}
+ */
 function CalendarsButton(props) {
-  const [openState, toggle] = useState(true);
-  const [checked, toggleChecked] = useState(true);
+  const [openState, toggle] = useState(true); // Used to handle dropdown behavior
+  const [checked, toggleChecked] = useState(true); // Used to indicate calendar visibility
   const arrow = openState ? "^" : "v";
+
+  /**
+   * onClick behavior for calendars dropdown
+   * @return {void}
+   */
   function onClick() {
     toggle(!openState);
   }
 
-  let calendarsArray = []; //new Array(3).fill(<CalendarCheckbox name="Example" />);
+  let calendarsArray = [];
   let groupCalendars = props.calendars[props.group];
   for (const calendar in groupCalendars) {
+    // updates calendars state and checked state if user clicks CalendarCheckbox component
     const visibilityToggle = () => {
       props.updateCalendars((prevState) => {
         prevState[props.group][calendar]["visibility"] =
