@@ -32,7 +32,8 @@ textarea {
 }
 #create {
   position: fixed;
-  top: 65px;
+  top: 79px;
+  left: 92px;
   z-index: 2;
 }
 

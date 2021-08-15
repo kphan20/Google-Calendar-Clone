@@ -60,7 +60,7 @@ function DayDisplay(props) {
         let dayEvents = sortEvents(
           props.events[day.format("MMM-D-YYYY")] || []
         );
-        console.log(dayEvents);
+        //console.log(dayEvents);
         let eventList = [];
         if (dayEvents) {
           let leftMargin = 0;
@@ -90,7 +90,7 @@ function DayDisplay(props) {
                 starttime={startTime.format("YYYY-MM-DDTHH:mm:ss")}
                 end={endTime.format("YYYY-MM-DDTHH:mm:ss")}
                 calendar={eventItem["calendarID"]}
-                eventID={eventItem["event_id"]}
+                eventid={eventItem["event_id"]}
                 request="put"
                 style={{
                   position: "absolute",

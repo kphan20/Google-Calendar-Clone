@@ -60,6 +60,7 @@ function App() {
         const calendarNames = {};
         const ownCalendars = calendars["own_calendars"];
         for (const calendar in ownCalendars) {
+          // Calls from database pass calendar objects as {calendarId}\{calendarName}
           const parsedCalendar = calendar.split("\\");
           calendarNames[parsedCalendar[1]] = parsedCalendar[0];
         }
@@ -85,7 +86,7 @@ function App() {
         selectedDay={attrs.starttime.value}
         endDate={attrs.end.value}
         calendar={attrs.calendar.value}
-        eventID={attrs.eventID.value}
+        eventID={attrs.eventid.value}
         dropDownOptions={dropDownOptions}
         authInfo={authInfo}
         updateCalendars={updateCalendars}

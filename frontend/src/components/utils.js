@@ -22,7 +22,7 @@ export function getCalendars(authInfo, updateCalendars) {
   // Sends request through axios
   axios.get(apiLink + "get-calendars/", config).then(
     (response) => {
-      console.log(response);
+      //console.log(response);
       for (const group in response.data) {
         const calendars = response.data[group];
         for (const calendar in calendars) {
