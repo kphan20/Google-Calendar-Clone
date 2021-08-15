@@ -37,6 +37,7 @@ function Login(props) {
       })
       .then(
         (response) => {
+          //console.log(response);
           props.setAuthInfo(response.data);
           history.push("/");
         },

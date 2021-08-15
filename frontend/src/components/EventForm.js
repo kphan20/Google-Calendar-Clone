@@ -148,7 +148,7 @@ function EventForm(props) {
         desc: description,
         calendar_id: calendarID,
       };
-      console.log(data);
+      //console.log(data);
       const headers = {
         Authorization: `Token ${props.authInfo["token"]}`,
       };
@@ -160,7 +160,7 @@ function EventForm(props) {
       })
         .then(
           (response) => {
-            console.log(response);
+            //console.log(response);
           },
           (error) => {
             console.log("event creation failed");
