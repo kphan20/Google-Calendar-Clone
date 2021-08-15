@@ -108,6 +108,18 @@ function EventForm(props) {
     changeCalendar(e.target.value);
   };
   /**
+   * Prevents time from changing from pm to am if user doesn't change am/pm dropdown
+   * @param {number} initialValue Hour value from form input
+   * @param {number} previousHour Hour value of start date state
+   * @returns {number} Either the unchanged value or the appropriate pm value in 24 hour time(>12)
+   */
+  const meridiemCheck = (initialValue, previousHour) => {
+    if (initialValue < 12 && previousHour >= 12) {
+      return initialValue + 12;
+    }
+    return initialValue;
+  };
+  /**
    * Changes start/end date based on entries in time based fields
    * @param  {Number}   maxValue        Max value for hours/minutes
    * @param  {String}   inputType       String used to determine which time field was changed
@@ -122,7 +134,14 @@ function EventForm(props) {
         if (value >= 0 && value <= maxValue) {
           changeFunction((previousState) => {
             let setType =
-              inputType === "hour" ? { hour: value } : { minutes: value };
+              inputType === "hour"
+                ? {
+                    hour: meridiemCheck(
+                      value,
+                      parseInt(previousState.format("H"))
+                    ),
+                  }
+                : { minutes: value };
             let newStartDate = moment(previousState).set(setType);
             if (compareFunction) {
               compareFunction(newStartDate);
@@ -256,6 +275,7 @@ function EventForm(props) {
           dir="rtl"
           type="number"
           max="23"
+          min="0"
           value={startHours}
           onChange={handleTimeFieldChanges(changeStartHours)}
           onBlur={timeEnter(24, "hour", changeStartDate, startBeforeEndCheck)}
@@ -265,6 +285,7 @@ function EventForm(props) {
           className="timefield"
           type="number"
           max="59"
+          min="0"
           value={startMins}
           onChange={handleTimeFieldChanges(changeStartMins)}
           onBlur={timeEnter(
@@ -297,6 +318,7 @@ function EventForm(props) {
           dir="rtl"
           type="number"
           max="23"
+          min="0"
           style={endDateStyle}
           className="timefield"
           value={endHours}
@@ -307,6 +329,7 @@ function EventForm(props) {
         <input
           type="number"
           max="59"
+          min="0"
           style={endDateStyle}
           className="timefield"
           value={endMins}
